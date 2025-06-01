@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build: first-steps",
+            "type": "shell",
+            "command": "make clean && make",
+            "options": {
+                "cwd": "${workspaceFolder}/first-steps"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build: hello-triangle",
+            "type": "shell",
+            "command": "make clean && make",
+            "options": {
+                "cwd": "${workspaceFolder}/hello-triangle"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

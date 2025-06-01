@@ -1,0 +1,46 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "First steps",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/first-steps/VulkanTest",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/first-steps",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build: first-steps"
+        },
+        {
+            "name": "Hello Triangle",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/hello-triangle/HelloTriangle",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/hello-triangle",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Build: hello-triangle"
+        }
+
+    ]
+}
