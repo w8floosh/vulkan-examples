@@ -18,6 +18,15 @@
                 "cwd": "${workspaceFolder}/hello-triangle"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Build: hello-triangle-multiple-frames",
+            "type": "shell",
+            "command": "make clean && make",
+            "options": {
+                "cwd": "${workspaceFolder}/hello-triangle-multiple-frames"
+            },
+            "problemMatcher": []
         }
     ]
 }
