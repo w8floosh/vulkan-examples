@@ -5,7 +5,8 @@
 #include "Shading.h"
 #include <set>
 
-void HelloTriangleApplication::initWindow() {
+void HelloTriangleApplication::initWindow()
+{
   glfwInit();
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
   glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -14,7 +15,8 @@ void HelloTriangleApplication::initWindow() {
   glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
-void HelloTriangleApplication::createInstance() {
+void HelloTriangleApplication::createInstance()
+{
   if (enableValidationLayers && !checkValidationLayerSupport())
     throw std::runtime_error("validation layers requested, but not available!");
 
@@ -41,13 +43,16 @@ void HelloTriangleApplication::createInstance() {
     std::cout << '\t' << extension.extensionName << std::endl;
   if (requiredExtensions.size() > 0 &&
       !std::all_of(requiredExtensions.begin(), requiredExtensions.end(),
-                   [&](const char *ext) {
+                   [&](const char *ext)
+                   {
                      return std::any_of(
                          availableExtensions.begin(), availableExtensions.end(),
-                         [&](const VkExtensionProperties &availableExt) {
+                         [&](const VkExtensionProperties &availableExt)
+                         {
                            return strcmp(ext, availableExt.extensionName) == 0;
                          });
-                   })) {
+                   }))
+  {
     throw std::runtime_error("Missing required extensions");
   }
 
@@ -63,7 +68,8 @@ void HelloTriangleApplication::createInstance() {
       .enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size()),
       .ppEnabledExtensionNames = requiredExtensions.data(),
   };
-  if (enableValidationLayers) {
+  if (enableValidationLayers)
+  {
     createInfo.pNext = &debugCreateInfo;
     populateDebugMessengerCreateInfo(debugCreateInfo);
   }
@@ -72,7 +78,8 @@ void HelloTriangleApplication::createInstance() {
     throw std::runtime_error("failed to create instance!");
 }
 
-void HelloTriangleApplication::setupDebugMessenger() {
+void HelloTriangleApplication::setupDebugMessenger()
+{
   if (!enableValidationLayers)
     return;
 
@@ -84,13 +91,15 @@ void HelloTriangleApplication::setupDebugMessenger() {
     throw std::runtime_error("failed to set up debug messenger!");
 }
 
-void HelloTriangleApplication::createSurface() {
+void HelloTriangleApplication::createSurface()
+{
   if (glfwCreateWindowSurface(instance, window, nullptr, &surface) !=
       VK_SUCCESS)
     throw std::runtime_error("failed to create window surface!");
 }
 
-void HelloTriangleApplication::selectPhysicalDevice() {
+void HelloTriangleApplication::selectPhysicalDevice()
+{
   uint32_t deviceCount = 0;
   vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
   if (deviceCount == 0)
@@ -102,15 +111,19 @@ void HelloTriangleApplication::selectPhysicalDevice() {
   // Use an ordered map to automatically sort candidates by increasing score
   std::multimap<int, VkPhysicalDevice> candidates;
 
-  for (const auto &device : devices) {
+  for (const auto &device : devices)
+  {
     int score = rateDeviceSuitability(device, surface);
     candidates.insert(std::make_pair(score, device));
   }
 
   // Check if the best candidate is suitable at all
-  if (candidates.rbegin()->first > 0) {
+  if (candidates.rbegin()->first > 0)
+  {
     physicalDevice = candidates.rbegin()->second;
-  } else {
+  }
+  else
+  {
     throw std::runtime_error("failed to find a suitable GPU!");
   }
 
@@ -118,7 +131,8 @@ void HelloTriangleApplication::selectPhysicalDevice() {
     throw std::runtime_error("failed to find a suitable GPU!");
 }
 
-void HelloTriangleApplication::createLogicalDevice() {
+void HelloTriangleApplication::createLogicalDevice()
+{
   auto indices =
       findQueueFamilies(physicalDevice, surface, VK_QUEUE_GRAPHICS_BIT);
 
@@ -159,7 +173,8 @@ void HelloTriangleApplication::createLogicalDevice() {
                    &qPresentation);
 }
 
-void HelloTriangleApplication::createSwapChain() {
+void HelloTriangleApplication::createSwapChain()
+{
   SwapChainSupportDetails swapChainSupport =
       querySwapChainSupport(physicalDevice, surface);
 
@@ -172,7 +187,8 @@ void HelloTriangleApplication::createSwapChain() {
   uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 
   if (swapChainSupport.capabilities.maxImageCount > 0 &&
-      imageCount > swapChainSupport.capabilities.maxImageCount) {
+      imageCount > swapChainSupport.capabilities.maxImageCount)
+  {
     imageCount = swapChainSupport.capabilities.maxImageCount;
   }
 
@@ -200,14 +216,17 @@ void HelloTriangleApplication::createSwapChain() {
   QueueFamilyIndices indices =
       findQueueFamilies(physicalDevice, surface, VK_QUEUE_GRAPHICS_BIT);
 
-  if (indices.graphicsFamily != indices.presentationFamily) {
+  if (indices.graphicsFamily != indices.presentationFamily)
+  {
     uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(),
                                      indices.presentationFamily.value()};
     createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
     createInfo.queueFamilyIndexCount =
         static_cast<uint32_t>(std::size(queueFamilyIndices));
     createInfo.pQueueFamilyIndices = queueFamilyIndices;
-  } else {
+  }
+  else
+  {
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     createInfo.queueFamilyIndexCount = 0;     // Optional
     createInfo.pQueueFamilyIndices = nullptr; // Optional
@@ -225,9 +244,11 @@ void HelloTriangleApplication::createSwapChain() {
   swapChainExtent = extent;
 }
 
-void HelloTriangleApplication::createImageViews() {
+void HelloTriangleApplication::createImageViews()
+{
   swapChainImageViews.resize(swapChainImages.size());
-  for (size_t i = 0; i < swapChainImages.size(); i++) {
+  for (size_t i = 0; i < swapChainImages.size(); i++)
+  {
     VkImageViewCreateInfo createInfo{
         .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
         .pNext = nullptr,
@@ -257,7 +278,8 @@ void HelloTriangleApplication::createImageViews() {
   }
 }
 
-void HelloTriangleApplication::createRenderPass() {
+void HelloTriangleApplication::createRenderPass()
+{
   VkAttachmentDescription colorAttachment{
       .format = swapChainImageFormat,
       .samples = VK_SAMPLE_COUNT_1_BIT,
@@ -305,7 +327,8 @@ void HelloTriangleApplication::createRenderPass() {
     throw std::runtime_error("failed to create render pass!");
 }
 
-void HelloTriangleApplication::createGraphicsPipeline(bool useDynamicState) {
+void HelloTriangleApplication::createGraphicsPipeline(bool useDynamicState)
+{
   auto vertShaderCode = readFile("shaders/vert.spv");
   auto fragShaderCode = readFile("shaders/frag.spv");
   std::vector<VkDynamicState> dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT,
@@ -449,9 +472,11 @@ void HelloTriangleApplication::createGraphicsPipeline(bool useDynamicState) {
   vkDestroyShaderModule(device, vertShaderModule, nullptr);
 }
 
-void HelloTriangleApplication::createFramebuffers() {
+void HelloTriangleApplication::createFramebuffers()
+{
   swapChainFramebuffers.resize(swapChainImageViews.size());
-  for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+  for (size_t i = 0; i < swapChainImageViews.size(); i++)
+  {
     VkImageView attachments[] = {swapChainImageViews[i]};
 
     VkFramebufferCreateInfo framebufferInfo{
@@ -471,7 +496,8 @@ void HelloTriangleApplication::createFramebuffers() {
   }
 }
 
-void HelloTriangleApplication::createCommandPool() {
+void HelloTriangleApplication::createCommandPool()
+{
   QueueFamilyIndices queueFamilyIndices =
       findQueueFamilies(physicalDevice, surface, VK_QUEUE_GRAPHICS_BIT);
 
@@ -486,7 +512,8 @@ void HelloTriangleApplication::createCommandPool() {
     throw std::runtime_error("failed to create command pool!");
 }
 
-void HelloTriangleApplication::createVertexBuffer() {
+void HelloTriangleApplication::createVertexBuffer()
+{
   VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
   VkBuffer stagingBuffer;
   VkDeviceMemory stagingBufferMemory;
@@ -499,7 +526,7 @@ void HelloTriangleApplication::createVertexBuffer() {
 
   void *data;
   // you can also use VK_WHOLE_SIZE to map all of the memory
-  if (vkMapMemory(device, vertexBufferMemory, 0, bufferSize, 0, &data) !=
+  if (vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data) !=
       VK_SUCCESS)
     throw std::runtime_error("failed to map vertex buffer memory!");
 
@@ -516,16 +543,44 @@ void HelloTriangleApplication::createVertexBuffer() {
   vkInvalidateMappedMemoryRanges before reading from the mapped memory
   */
   memcpy(data, vertices.data(), (size_t)bufferSize);
-  vkUnmapMemory(device, vertexBufferMemory);
+  vkUnmapMemory(device, stagingBufferMemory);
 
   createBuffer(device, physicalDevice, bufferSize,
-               VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                   VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+               VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+                   VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                vertexBuffer, vertexBufferMemory);
+
+  copyBuffer(device, commandPool, qGraphics, stagingBuffer,
+             vertexBuffer, bufferSize);
+
+  vkDestroyBuffer(device, stagingBuffer, nullptr);
+  vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
-void HelloTriangleApplication::createCommandBuffers() {
+void HelloTriangleApplication::createIndexBuffer()
+{
+  VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+  VkBuffer stagingBuffer;
+  VkDeviceMemory stagingBufferMemory;
+  createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+  void *data;
+  vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+  memcpy(data, indices.data(), (size_t)bufferSize);
+  vkUnmapMemory(device, stagingBufferMemory);
+
+  createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+
+  copyBuffer(device, commandPool, qGraphics, stagingBuffer, indexBuffer, bufferSize);
+
+  vkDestroyBuffer(device, stagingBuffer, nullptr);
+  vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
+
+void HelloTriangleApplication::createCommandBuffers()
+{
   commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
   VkCommandBufferAllocateInfo allocInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
@@ -541,7 +596,8 @@ void HelloTriangleApplication::createCommandBuffers() {
 }
 
 void HelloTriangleApplication::recordCommandBuffer(
-    VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    VkCommandBuffer commandBuffer, uint32_t imageIndex)
+{
 
   VkCommandBufferBeginInfo beginInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -596,15 +652,17 @@ void HelloTriangleApplication::recordCommandBuffer(
   VkBuffer vertexBuffers[] = {vertexBuffer};
   VkDeviceSize offsets[] = {0};
   vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+  vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-  vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+  vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
   vkCmdEndRenderPass(commandBuffer);
 
   if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
     throw std::runtime_error("failed to record command buffer!");
 }
 
-void HelloTriangleApplication::createSyncObjects() {
+void HelloTriangleApplication::createSyncObjects()
+{
   imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
   inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
@@ -619,7 +677,8 @@ void HelloTriangleApplication::createSyncObjects() {
       .flags = VK_FENCE_CREATE_SIGNALED_BIT,
   };
 
-  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+  for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+  {
     if (vkCreateSemaphore(device, &semaphoreInfo, nullptr,
                           &imageAvailableSemaphores[i]) != VK_SUCCESS)
       throw std::runtime_error("failed to create image available semaphore!");
@@ -634,7 +693,8 @@ void HelloTriangleApplication::createSyncObjects() {
   }
 }
 
-void HelloTriangleApplication::draw() {
+void HelloTriangleApplication::draw()
+{
   vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE,
                   UINT64_MAX);
   uint32_t imageIndex;
@@ -643,10 +703,13 @@ void HelloTriangleApplication::draw() {
       device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame],
       VK_NULL_HANDLE, &imageIndex);
 
-  if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+  if (result == VK_ERROR_OUT_OF_DATE_KHR)
+  {
     recreateSwapChain();
     return;
-  } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+  }
+  else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+  {
     throw std::runtime_error("failed to acquire swap chain image!");
   }
 
@@ -687,20 +750,25 @@ void HelloTriangleApplication::draw() {
 
   result = vkQueuePresentKHR(qPresentation, &presentInfo);
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-      framebufferResized) {
+      framebufferResized)
+  {
     framebufferResized = false;
     recreateSwapChain();
-  } else if (result != VK_SUCCESS) {
+  }
+  else if (result != VK_SUCCESS)
+  {
     throw std::runtime_error("failed to present swap chain image!");
   }
 
   currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void HelloTriangleApplication::recreateSwapChain() {
+void HelloTriangleApplication::recreateSwapChain()
+{
   int width = 0, height = 0;
   glfwGetFramebufferSize(window, &width, &height);
-  while (width == 0 || height == 0) {
+  while (width == 0 || height == 0)
+  {
     glfwGetFramebufferSize(window, &width, &height);
     glfwWaitEvents();
   }

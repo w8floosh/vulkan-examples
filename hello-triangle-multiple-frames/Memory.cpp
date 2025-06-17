@@ -2,13 +2,16 @@
 #include <stdexcept>
 
 uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter,
-                        VkMemoryPropertyFlags properties) {
+                        VkMemoryPropertyFlags properties)
+{
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
-  for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+  for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+  {
     if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags &
-                                    properties) == properties) {
+                                    properties) == properties)
+    {
       return i;
     }
   }
@@ -19,7 +22,8 @@ uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter,
 void createBuffer(VkDevice logicalDevice, VkPhysicalDevice physicalDevice,
                   VkDeviceSize size, VkBufferUsageFlags usage,
                   VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                  VkDeviceMemory &bufferMemory) {
+                  VkDeviceMemory &bufferMemory)
+{
   VkBufferCreateInfo bufferInfo{.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
                                 .pNext = nullptr,
                                 .size = size,
@@ -50,8 +54,9 @@ void createBuffer(VkDevice logicalDevice, VkPhysicalDevice physicalDevice,
   vkBindBufferMemory(logicalDevice, buffer, bufferMemory, 0);
 }
 
-void copyBuffer(VkDevice device, VkCommandPool commandPool, VkBuffer srcBuffer,
-                VkBuffer dstBuffer, VkDeviceSize size) {
+void copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkBuffer srcBuffer,
+                VkBuffer dstBuffer, VkDeviceSize size)
+{
   VkCommandBufferAllocateInfo allocInfo{
       .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
       .pNext = nullptr,
@@ -95,9 +100,6 @@ void copyBuffer(VkDevice device, VkCommandPool commandPool, VkBuffer srcBuffer,
                           .pCommandBuffers = &commandBuffer,
                           .signalSemaphoreCount = 0,
                           .pSignalSemaphores = nullptr};
-
-  VkQueue graphicsQueue;
-  vkGetDeviceQueue(device, queueFamily, 0, &graphicsQueue);
 
   if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) !=
       VK_SUCCESS)

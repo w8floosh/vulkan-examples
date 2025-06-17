@@ -9,11 +9,13 @@ inline const uint32_t HEIGHT = 600;
 inline const int MAX_FRAMES_IN_FLIGHT = 2;
 inline const char *APP_NAME = "Hello Triangle";
 
-class HelloTriangleApplication {
+class HelloTriangleApplication
+{
 public:
   bool framebufferResized = false;
 
-  void run() {
+  void run()
+  {
     initWindow();
     initVulkan();
     mainLoop();
@@ -42,6 +44,8 @@ private:
   std::vector<VkCommandBuffer> commandBuffers;
   VkBuffer vertexBuffer;
   VkDeviceMemory vertexBufferMemory;
+  VkBuffer indexBuffer;
+  VkDeviceMemory indexBufferMemory;
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
@@ -60,7 +64,8 @@ private:
   void initWindow();
 
   // Initialize Vulkan.
-  void initVulkan() {
+  void initVulkan()
+  {
     createInstance();
     setupDebugMessenger();
     createSurface();
@@ -73,6 +78,7 @@ private:
     createFramebuffers();
     createCommandPool();
     createVertexBuffer();
+    createIndexBuffer();
     createCommandBuffers();
     createSyncObjects();
   }
@@ -184,6 +190,8 @@ private:
   void createFramebuffers();
   void createCommandPool();
   void createVertexBuffer();
+
+  void createIndexBuffer();
   void createCommandBuffers();
   void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   void createSyncObjects();
@@ -198,8 +206,10 @@ private:
   // The main loop calls the glfwPollEvents function to process input events.
   // The glfwPollEvents function processes all pending events and calls the
   // appropriate callback functions.
-  void mainLoop() {
-    while (!glfwWindowShouldClose(window)) {
+  void mainLoop()
+  {
+    while (!glfwWindowShouldClose(window))
+    {
       glfwPollEvents();
       draw();
     }
@@ -216,17 +226,23 @@ private:
   // The vkDestroyInstance function destroys the Vulkan instance.
   // The glfwDestroyWindow function destroys the GLFW window.
   // The glfwTerminate function terminates and cleans up the GLFW library.
-  void cleanup() {
+  void cleanup()
+  {
     cleanupSwapchain();
 
     vkDestroyBuffer(device, vertexBuffer, nullptr);
     vkFreeMemory(device, vertexBufferMemory, nullptr);
+
+    vkDestroyBuffer(device, indexBuffer, nullptr);
+    vkFreeMemory(device, indexBufferMemory, nullptr);
+
     vkDestroyPipeline(device, graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 
     vkDestroyRenderPass(device, renderPass, nullptr);
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
       vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
       vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
       vkDestroyFence(device, inFlightFences[i], nullptr);
@@ -244,7 +260,8 @@ private:
     glfwTerminate();
   }
 
-  void cleanupSwapchain() {
+  void cleanupSwapchain()
+  {
     for (auto framebuffer : swapChainFramebuffers)
       vkDestroyFramebuffer(device, framebuffer, nullptr);
     for (auto imageView : swapChainImageViews)
@@ -254,7 +271,8 @@ private:
 };
 
 static void framebufferResizeCallback(GLFWwindow *window, int width,
-                                      int height) {
+                                      int height)
+{
   auto app = reinterpret_cast<HelloTriangleApplication *>(
       glfwGetWindowUserPointer(window));
   app->framebufferResized = true;

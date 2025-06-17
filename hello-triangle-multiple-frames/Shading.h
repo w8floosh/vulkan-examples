@@ -4,11 +4,13 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-struct Vertex {
+struct Vertex
+{
   glm::vec2 pos;
   glm::vec3 color;
 
-  static VkVertexInputBindingDescription getBindingDescription() {
+  static VkVertexInputBindingDescription getBindingDescription()
+  {
     VkVertexInputBindingDescription bindingDescription{
         .binding = 0,
         .stride = sizeof(Vertex),
@@ -19,7 +21,8 @@ struct Vertex {
   }
 
   static std::array<VkVertexInputAttributeDescription, 2>
-  getAttributeDescriptions() {
+  getAttributeDescriptions()
+  {
     std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {
         VkVertexInputAttributeDescription{
             .location = 0,
@@ -40,7 +43,10 @@ struct Vertex {
 };
 
 const std::vector<Vertex> vertices = {
-    {{-0.5f, -0.5f}, {0.0f, 0.0f, 0.0f}}, // Bottom left
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},  // Bottom right
-    {{0.0f, 0.5f}, {0.0f, 0.0f, 1.0f}},   // Top
-};
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
+
+const std::vector<uint16_t> indices = {
+    0, 1, 2, 2, 3, 0};

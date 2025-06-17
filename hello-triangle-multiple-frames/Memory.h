@@ -8,4 +8,5 @@ void createBuffer(VkDevice logicalDevice, VkPhysicalDevice device,
                   VkMemoryPropertyFlags properties, VkBuffer &buffer,
                   VkDeviceMemory &bufferMemory);
 
-void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+void copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue,
+                VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
